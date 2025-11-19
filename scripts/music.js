@@ -655,27 +655,28 @@ function initializeSearchSystem() {
         episodeDiv.dataset.episodeId = episode.id;
         
         episodeDiv.innerHTML = `
-    <div class="relative flex-shrink-0">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${episode.imageGradient} rounded flex items-center justify-center">
-            <i class="fa-solid fa-play text-white play-icon text-xs sm:text-sm"></i>
-        </div>
-    </div>
-    <div class="flex-1 min-w-0">
-        <h3 class="font-semibold text-white text-sm sm:text-base truncate">${episode.nome}</h3>
-        <p class="text-gray-400 text-xs sm:text-sm line-clamp-2">${episode.descricao}</p>
-        <div class="flex items-center gap-2 sm:gap-4 mt-1">
-            <span class="text-gray-500 text-xs">${episode.data}</span>
-            <span class="text-gray-500 text-xs">${formatTime(episode.audioDuration || episode.defaultDuration)}</span>
-        </div>
-    </div>
-    <div class="blockchain-info text-right flex-shrink-0">
-        <div class="text-green-400 text-xs font-mono truncate" title="${episode.blockchainHash}">
-            ${episode.blockchainHash ? episode.blockchainHash.substring(0, 12) + '...' : 'Carregando...'}
-        </div>
-        <div class="text-gray-500 text-xs">Bloco ${episode.blockIndex}</div>
-        <div class="text-gray-500 text-xs hidden sm:block">${episode.blockchainDate}</div>
-    </div>
-`;
+            <div class="relative">
+                <div class="w-12 h-12 bg-gradient-to-br ${episode.imageGradient} rounded flex items-center justify-center">
+                    <i class="fa-solid fa-play text-white play-icon"></i>
+                </div>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-white text-sm sm:text-base truncate">${episode.nome}</h3>
+                <p class="text-gray-400 text-sm">${episode.descricao}</p>
+                <div class="flex items-center gap-4 mt-1">
+                    <span class="text-gray-500 text-xs">${episode.data}</span>
+                    <span class="text-gray-500 text-xs">${formatTime(episode.audioDuration || episode.defaultDuration)}</span>
+                </div>
+            </div>
+            <div class="blockchain-info text-right">
+                <div class="text-green-400 text-xs font-mono" title="${episode.blockchainHash}">
+                    ${episode.blockchainHash ? episode.blockchainHash.substring(0, 16) + '...' : 'Carregando...'}
+                </div>
+                <div class="text-gray-500 text-xs">Bloco ${episode.blockIndex}</div>
+                <div class="text-gray-500 text-xs">${episode.blockchainDate}</div>
+            </div>
+        `;
+        
         return episodeDiv;
     }
     
