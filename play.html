@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Podcast</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
+    
+    <style>
+        .episode-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .banner-transition {
+            transition: all 0.5s ease-in-out;
+        }
+        .banner-hidden {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .banner-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .gradient-1 {
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+        }
+        .gradient-2 {
+            background: linear-gradient(135deg, #EC4899, #8B5CF6);
+        }
+        .gradient-3 {
+            background: linear-gradient(135deg, #10B981, #3B82F6);
+        }
+        .gradient-4 {
+            background: linear-gradient(135deg, #F59E0B, #EF4444);
+        }
+        .gradient-5 {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+        }
+        #banner-area {
+            position: relative;
+            cursor: pointer;
+        }
+        .banner-nav-hint {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+        .banner-nav-left {
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+        .banner-nav-right {
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+         .play-icon {
+          cursor: pointer;
+           opacity: 1;
+           transition: transform 0.2s ease-in-out; 
+             }
+
+          .episode:hover .play-icon {
+              transform: scale(1.2); 
+           
+          }
+        #audio-player {
+            transition: transform 0.3s ease-in-out;
+        }
+        #audio-player.hidden {
+            transform: translateY(100%);
+        }
+        .progress-bar {
+            height: 6px;
+            background: #404040;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress {
+            height: 100%;
+            background: #1DB954;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+            position: relative;
+        }
+        .progress-handle {
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            cursor: grab;
+        }
+        .progress-bar:hover .progress-handle,
+        .progress-bar.dragging .progress-handle {
+            opacity: 1;
+        }
+        .progress-bar.dragging {
+            cursor: grabbing;
+        }
+        .volume-bar {
+            width: 80px;
+            height: 4px;
+            background: #404040;
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+        .volume-level {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            width: 70%;
+            transition: width 0.2s ease;
+        }
+        .active-banner {
+            border-left: 4px solid #020b1c;
+            background: rgba(30, 30, 30, 0.5);
+        }
+        .episode-reordering {
+            transition: all 0.3s ease-in-out;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+  <audio id="audio-element" preload="metadata" style="display: none;"></audio>
+
+<header>
+  <div class="flex fixed bg-black w-full px-3 md:px-20 py-4 z-10">
+    <div class="container flex items-center mx-auto">
+      <div>
+        <a href="index.html">
+          <img src="img/podcast.png" alt="Podcast" class="w-14 md:w-125px">
+        </a>
+      </div>
+      
+      <!-- Barra de Pesquisa -->
+      <div class="flex-1 flex justify-center px-4">
+        <div class="relative w-full max-w-md">
+          <div class="flex items-center border-b border-gray-600 pb-1">
+            <i class="fas fa-search text-gray-400 mr-2"></i>
+            <input 
+              type="text" 
+              id="search-audio"
+              placeholder="Pesquisar áudio"
+              class="bg-transparent text-white placeholder-gray-400 outline-none w-full"
+            />
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="items-end flex-1 text-white font-bold hidden md:flex">
+        <nav class="flex-1">
+          <ul class="flex justify-end flex-1">
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="bg-gradient-to-b from-gray-900 to-black min-h-screen pt-20 md:pt-24 px-4 md:px-20">
+    <!-- Cabeçalho do podcast -->
+    <div class="max-w-4xl mx-auto">
+      <div id="banner-area" class="flex flex-col md:flex-row items-start md:items-center gap-8 mb-12 relative">
+        <!-- Dicas de navegação do banner -->
+        <div class="banner-nav-hint banner-nav-left hidden md:block" id="banner-hint-left">
+        
+        </div>
+        
+        <!-- Imagem do podcast (rotativa) -->
+        <div id="podcast-image" class="w-48 h-48 m-1.5 md:w-64 md:h-64 gradient-1 rounded-lg shadow-lg flex-shrink-0 banner-transition banner-visible ">
+          <!-- Gradientes serão aplicados via JavaScript -->
+        </div>
+        
+        <!-- Informações do podcast (rotativas) -->
+        <div class="flex-1 text-white">
+          <div id="banner-content" class="banner-transition banner-visible">
+            <h1 id="banner-title" class="text-4xl md:text-5xl font-bold mb-4">Gramsci: Hegemonia e Revolução</h1>
+            <p id="banner-description" class="text-lg text-gray-300 mb-6">Ouça Gramsci: Hegemonia e Revolução, o podcast que desvenda as ideias do teórico marxista. Um convite à reflexão em 154 toques!</p>
+            
+            <!-- Botões de ação -->
+            <div class="flex items-center gap-4 flex-wrap">
+              <button id="main-play-btn" class="bg-blue-500 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full flex items-center gap-2 transition duration-300">
+                <i class="fa-solid fa-play"></i>
+                <span>Play</span>
+              </button>
+              
+              <button class="share-btn bg-transparent border border-gray-600 hover:border-white text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition duration-300">
+                <i class="fas fa-share-alt"></i>
+                <span>Compartilhe</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dicas de navegação do banner -->
+        <div class="banner-nav-hint banner-nav-right hidden md:block" id="banner-hint-right">
+      
+        </div>
+      </div>
+      
+      <!-- Lista de episódios -->
+      <div class="text-white relative">
+        <h2 class="text-2xl font-bold mb-6">Episódios</h2>
+        
+        <!-- Container dos episódios -->
+        <div id="episodes-container" class="w-full max-w-full px-4 sm:px-6 lg:px-8 mx-auto">
+    <!-- Os episódios serão carregados dinamicamente via JavaScript -->
+</div>
+      </div>
+    </div>
+  </div>
+  </main>
+
+  <!-- Player de Áudio Fixo -->
+  <div id="audio-player" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 p-4 hidden">
+    <div class="max-w-4xl mx-auto relative">
+      <!-- Botão Fechar (X) -->
+      <button id="close-player-btn" class="absolute -top-2 -right-2 md:-right-10 text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <!-- Barra de Progresso com Tempo -->
+      <div class="flex items-center justify-between mb-2">
+        <span id="current-time" class="text-gray-400 text-xs">0:00</span>
+        <div class="progress-bar flex-1 mx-3" id="progress-container">
+          <div class="progress" id="progress-bar">
+            <div class="progress-handle" id="progress-handle"></div>
+          </div>
+        </div>
+        <span id="duration" class="text-gray-400 text-xs">0:00</span>
+      </div>
+      
+      <div class="flex items-center justify-between">
+        <!-- Informações do episódio -->
+        <div class="flex items-center space-x-4 flex-1">
+          <div id="current-episode-image" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded"></div>
+          <div class="text-white">
+            <div id="current-track" class="font-semibold text-sm">Nenhum episódio selecionado</div>
+            <div id="current-podcast" class="text-gray-400 text-xs">Gramsci: Hegemonia e Revolução</div>
+          </div>
+        </div>
+        
+        <!-- Controles principais -->
+        <div class="flex items-center space-x-6 flex-1 justify-center">
+          <!-- NOVO: Botão Shuffle -->
+          <button id="shuffle-btn" class="text-gray-400 hover:text-white transition-colors" title="Ativar reprodução aleatória">
+            <i class="fa-solid fa-shuffle text-lg"></i>
+          </button>
+          <button id="backward-btn" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-backward-step text-xl"></i>
+          </button>
+          <button id="player-play-btn" class="bg-white text-black rounded-full p-3 hover:scale-105 transition-transform">
+            <i class="fa-solid fa-play text-lg"></i>
+          </button>
+          <button id="forward-btn" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-forward-step text-xl"></i>
+          </button>
+          <button id="repeat-btn" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-repeat text-lg"></i>
+          </button>
+        </div>
+        
+        <!-- Controles de volume -->
+        <div class="flex items-center space-x-3 flex-1 justify-end">
+          <button id="volume-btn" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-volume-high text-lg"></i>
+          </button>
+          <div class="volume-bar" id="volume-container">
+            <div class="volume-level" id="volume-level"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<footer>
+  <div class="grid grid-cols-1 md:grid-cols-6 bg-black text-white p-4 md:p-20">
+    <div class="md:col-span-1 pt-10 md:pt-0">
+      <a href="#">
+        <img src="img/podcast.png" alt="Podcast" class="w-20 md:w-132px">
+      </a>
+    </div>
+    <div class="md:col-span-1 pt-10 md:pt-4">
+      <h3 class="uppercase text-gray-500 font-bold text-xs tracking-widest mb-5">Iniciativa pública</h3>
+      <ul>
+        <li class="mb-5">
+          <a href="sobre.html">Sobre</a>
+        </li>
+        <li class="mb-5">
+          <a href="colaboradores.html">Colaboradores</a>
+        </li>
+        
+      </ul>
+    </div>
+    <div class="md:col-span-1 pt-10 md:pt-4">
+      <h3 class="uppercase text-gray-500 font-bold text-xs tracking-widest mb-5">Comunidades</h3>
+      <ul>
+        <li class="mb-5">
+          <a href="jornalistas.html">Para Jornalista</a>
+        </li>
+        
+        <li class="mb-5">
+          <a href="desenvolvedores.html">Desenvolvedores</a>
+        </li>
+        <li class="mb-5">
+          <a href="publicidade.html">Publicidade</a>
+        </li>
+        <li class="mb-5">
+          <a href="investidores.html">Investidores</a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="md:col-span-2 pt-10 md:pt-4">
+      <ul class="flex md:justify-end">
+        <li class="flex items-center justify-center text-2xl bg-gray-900 w-12 h-12 rounded-full hover:text-green-main mx-2">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </li>
+        <li class="flex items-center justify-center text-2xl bg-gray-900 w-12 h-12 rounded-full hover:text-green-main mx-2">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </li>
+        <li class="flex items-center justify-center text-2xl bg-gray-900 w-12 h-12 rounded-full hover:text-green-main mx-2">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+        </li>
+      </ul>
+    </div>
+    <div class="md:col-span-4 mt-20">
+      <ul>
+        <li class="inline-block text-xs text-gray-600 mr-4">
+          <a href="#">Legal</a>
+        </li>
+        <li class="inline-block text-xs text-gray-600 mr-4">
+          <a href="#">Centro de Privacidade</a>
+        </li>
+        <li class="inline-block text-xs text-gray-600 mr-4">
+          <a href="#">Política de Privacidade</a>
+        </li>
+        <li class="inline-block text-xs text-gray-600 mr-4>
+          <a href="#">Cookies</a>
+        </li>
+        <li class="inline-block text-xs text-gray-600 mr-4">
+          <a href="#">Sobre anúncios</a>
+        </li>
+      </ul>
+    </div>
+    <div class="md:col-span-2 mt-20">
+       <p class="flex justify-end text-gray-500 text-xs">&copy; <span id="current-year"></span>   Podcast</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal de Compartilhamento Transparente -->
+<div id="share-modal" class="fixed inset-0 flex items-center justify-center z-50 p-4 hidden">
+    <!-- Overlay com opacidade e blur -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"></div>
+    
+    <!-- Conteúdo do modal -->
+    <div class="bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-gray-600/50 p-6 max-w-xs w-full mx-auto relative z-10 transform transition-all duration-300 scale-95 opacity-0" id="share-modal-content">
+        <button id="close-modal-x" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors z-10">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <h3 class="text-white text-center font-semibold mb-6 text-lg">Compartilhar</h3>
+        
+        <div class="flex justify-center items-center gap-6 mb-6">
+            <button class="share-option bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95" data-platform="whatsapp">
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </button>
+            
+            <button class="share-option bg-pink-500 hover:bg-pink-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95" data-platform="instagram">
+                <i class="fab fa-instagram text-2xl"></i>
+            </button>
+            
+            <button class="share-option bg-blue-500 hover:bg-blue-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95" data-platform="copy">
+                <i class="fas fa-link text-2xl"></i>
+            </button>
+        </div>
+        
+        <button class="w-full py-3 text-gray-400 hover:text-white transition-colors text-sm close-share-modal">
+            Fechar
+        </button>
+    </div>
+</div>
+
+<script src="scripts/share.js"></script>
+  <script src="scripts/banner.js"></script>
+  <script src="scripts/music.js"></script> 
+
+<script>
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
