@@ -135,7 +135,7 @@ let episodesData = [
         nome: "1. A Hegemonia",
         autor: "Carlos Silva",
         data: "12 Nov 2025",
-        descricao: "Descrição do episódio sobre hegemonia nos dias atuais.",
+        descricao: "Descrição do episódio",
         audio: "audios/a1.mp3",
         imageGradient: "from-purple-500 to-blue-500",
         bannerGradient: "gradient-1",
@@ -157,7 +157,7 @@ let episodesData = [
         nome: "3. O Conceito",
         autor: "João Pereira",
         data: "29 Out 2025",
-        descricao: "Análise do conceito de sociedade civil em Gramsci.",
+        descricao: "Análise do conceito de.",
         audio: "audios/a1.mp3",
         imageGradient: "from-green-500 to-blue-500",
         bannerGradient: "gradient-3",
@@ -165,7 +165,7 @@ let episodesData = [
     },
     {
         id: 4,
-        nome: "4. Intelectuais Orgânicos um teste para textos grandes",
+        nome: "4. Intelectuais Orgânicos",
         autor: "Ana Costa",
         data: "22 Out 2025",
         descricao: "O papel dos intelectuais orgânicos na transformação social.",
@@ -480,11 +480,10 @@ const audioManager = (() => {
     };
     
     const updatePlayerInfo = (episodeData) => {
-        currentTrack.textContent = episodeData.nome;
-        currentPodcast.textContent = episodeData.autor || 'Podcast Gramsci';
-        currentEpisodeImage.className = `w-12 h-12 bg-gradient-to-br ${episodeData.imageGradient} rounded`;
-    };
-    
+    currentTrack.textContent = episodeData.nome;
+    currentPodcast.textContent = episodeData.autor || 'Podcast Gramsci';
+    currentEpisodeImage.className = `w-10 h-10 bg-gradient-to-br ${episodeData.imageGradient} rounded-full`;
+};
     const loadEpisode = (episodeData) => {
         try {
             if (isPlaying) {

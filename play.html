@@ -117,6 +117,11 @@
         .progress-bar.dragging {
             cursor: grabbing;
         }
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .volume-bar {
             width: 80px;
             height: 4px;
@@ -152,6 +157,27 @@
         }
         footer {
             flex-shrink: 0;
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 768px) {
+            .volume-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            .volume-bar {
+                width: 4px;
+                height: 80px;
+                margin: 8px 0;
+            }
+            .volume-level {
+                width: 100%;
+                height: 70%;
+            }
+            #volume-btn {
+                order: -1;
+            }
         }
     </style>
 </head>
@@ -251,66 +277,66 @@
   </main>
 
   <!-- Player de Áudio Fixo -->
-  <div id="audio-player" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 p-4 hidden">
-    <div class="max-w-4xl mx-auto relative">
-      <!-- Botão Fechar (X) -->
-      <button id="close-player-btn" class="absolute -top-2 -right-2 md:-right-10 text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      
-      <!-- Barra de Progresso com Tempo -->
-      <div class="flex items-center justify-between mb-2">
-        <span id="current-time" class="text-gray-400 text-xs">0:00</span>
-        <div class="progress-bar flex-1 mx-3" id="progress-container">
-          <div class="progress" id="progress-bar">
-            <div class="progress-handle" id="progress-handle"></div>
-          </div>
+<div id="audio-player" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 p-4 hidden">
+  <div class="max-w-4xl mx-auto relative">
+    <!-- Botão Fechar (X) -->
+    <button id="close-player-btn" class="absolute -top-2 -right-2 md:-right-10 text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
+    <!-- Barra de Progresso com Tempo -->
+    <div class="flex items-center justify-between mb-2">
+      <span id="current-time" class="text-gray-400 text-xs">0:00</span>
+      <div class="progress-bar flex-1 mx-3" id="progress-container">
+        <div class="progress" id="progress-bar">
+          <div class="progress-handle" id="progress-handle"></div>
         </div>
-        <span id="duration" class="text-gray-400 text-xs">0:00</span>
+      </div>
+      <span id="duration" class="text-gray-400 text-xs">0:00</span>
+    </div>
+    
+    <div class="flex items-center justify-between">
+      <!-- Informações do episódio -->
+      <div class="flex items-center space-x-4 flex-1">
+        <div id="current-episode-image" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full"></div>
+        <div class="text-white">
+          <div id="current-track" class="font-semibold text-sm">Nenhum episódio selecionado</div>
+          <div id="current-podcast" class="text-gray-400 text-xs">Podcast Gramsci</div>
+        </div>
       </div>
       
-      <div class="flex items-center justify-between">
-        <!-- Informações do episódio -->
-        <div class="flex items-center space-x-4 flex-1">
-<div id="current-episode-image" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full"></div>
-          <div class="text-white">
-            <div id="current-track" class="font-semibold text-sm">Nenhum episódio selecionado</div>
-            <div id="current-podcast" class="text-gray-400 text-xs">Podcast Gramsci</div>
-          </div>
-        </div>
-        
-        <!-- Controles principais -->
-        <div class="flex items-center space-x-6 flex-1 justify-center">
-          <!-- NOVO: Botão Shuffle -->
-          <button id="shuffle-btn" class="text-gray-400 hover:text-white transition-colors" title="Ativar reprodução aleatória">
-            <i class="fa-solid fa-shuffle text-lg"></i>
-          </button>
-          <button id="backward-btn" class="text-gray-400 hover:text-white transition-colors">
-            <i class="fa-solid fa-backward-step text-xl"></i>
-          </button>
-          <button id="player-play-btn" class="bg-white text-black rounded-full p-3 hover:scale-105 transition-transform">
-            <i class="fa-solid fa-play text-lg"></i>
-          </button>
-          <button id="forward-btn" class="text-gray-400 hover:text-white transition-colors">
-            <i class="fa-solid fa-forward-step text-xl"></i>
-          </button>
-          <button id="repeat-btn" class="text-gray-400 hover:text-white transition-colors">
-            <i class="fa-solid fa-repeat text-lg"></i>
-          </button>
-        </div>
-        
-        <!-- Controles de volume -->
-        <div class="flex items-center space-x-3 flex-1 justify-end">
-          <button id="volume-btn" class="text-gray-400 hover:text-white transition-colors">
-            <i class="fa-solid fa-volume-high text-lg"></i>
-          </button>
-          <div class="volume-bar" id="volume-container">
-            <div class="volume-level" id="volume-level"></div>
-          </div>
+      <!-- Controles principais -->
+      <div class="flex items-center space-x-6 flex-1 justify-center">
+        <!-- NOVO: Botão Shuffle -->
+        <button id="shuffle-btn" class="text-gray-400 hover:text-white transition-colors" title="Ativar reprodução aleatória">
+          <i class="fa-solid fa-shuffle text-lg"></i>
+        </button>
+        <button id="backward-btn" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-backward-step text-xl"></i>
+        </button>
+        <button id="player-play-btn" class="bg-white text-black rounded-full p-3 hover:scale-105 transition-transform">
+          <i class="fa-solid fa-play text-lg"></i>
+        </button>
+        <button id="forward-btn" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-forward-step text-xl"></i>
+        </button>
+        <button id="repeat-btn" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-repeat text-lg"></i>
+        </button>
+      </div>
+      
+      <!-- Controles de volume -->
+      <div class="volume-container flex-1 justify-end">
+        <button id="volume-btn" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-volume-high text-lg"></i>
+        </button>
+        <div class="volume-bar" id="volume-container">
+          <div class="volume-level" id="volume-level"></div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 <footer>
   <div class="grid grid-cols-1 md:grid-cols-6 bg-black text-white p-4 md:p-20">
