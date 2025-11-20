@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
    
     
+  <script defer src="scripts/music.js"></script> 
     <style>
         .episode-transition {
             transition: all 0.3s ease-in-out;
@@ -203,30 +204,32 @@
         </div>
         
         <!-- Imagem do podcast (rotativa) -->
-        <div id="podcast-image" class="w-48 h-48 m-1.5 md:w-64 md:h-64 gradient-1 rounded-lg shadow-lg flex-shrink-0 banner-transition banner-visible ">
-          <!-- Gradientes serão aplicados via JavaScript -->
-        </div>
+<div id="podcast-image" class="w-48 h-48 m-1.5 md:w-64 md:h-64 gradient-1 rounded-full shadow-lg flex-shrink-0 banner-transition banner-visible">
+    <!-- Gradientes serão aplicados via JavaScript -->
+</div>
         
         <!-- Informações do podcast (rotativas) -->
-        <div class="flex-1 text-white">
-          <div id="banner-content" class="banner-transition banner-visible">
-            <h1 id="banner-title" class="text-4xl md:text-5xl font-bold mb-4">Gramsci: Hegemonia e Revolução</h1>
-            <p id="banner-description" class="text-lg text-gray-300 mb-6">Ouça Gramsci: Hegemonia e Revolução, o podcast que desvenda as ideias do teórico marxista. Um convite à reflexão em 154 toques!</p>
-            
-            <!-- Botões de ação -->
-            <div class="flex items-center gap-4 flex-wrap">
-              <button id="main-play-btn" class="bg-blue-500 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full flex items-center gap-2 transition duration-300">
+<div class="flex-1 text-white">
+    <div id="banner-content" class="banner-transition banner-visible">
+        <h1 id="banner-title" class="text-4xl md:text-5xl font-bold mb-2"></h1>
+        <!-- Adicione esta linha para o autor -->
+        <p id="banner-author" class="text-lg text-blue-400 mb-4">Autor</p>
+        <p id="banner-description" class="text-lg text-gray-300 mb-6"></p>
+        
+        <!-- Botões de ação -->
+        <div class="flex items-center gap-4 flex-wrap">
+            <button id="main-play-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full flex items-center gap-2 transition duration-300">
                 <i class="fa-solid fa-play"></i>
                 <span>Play</span>
-              </button>
-              
-              <button class="share-btn bg-transparent border border-gray-600 hover:border-white text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition duration-300">
+            </button>
+            
+            <button class="share-btn bg-transparent border border-gray-600 hover:border-white text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition duration-300 cursor-pointer">
                 <i class="fas fa-share-alt"></i>
                 <span>Compartilhe</span>
-              </button>
-            </div>
-          </div>
+            </button>
         </div>
+    </div>
+</div>
         
         <!-- Dicas de navegação do banner -->
         <div class="banner-nav-hint banner-nav-right hidden md:block" id="banner-hint-right">
@@ -269,10 +272,10 @@
       <div class="flex items-center justify-between">
         <!-- Informações do episódio -->
         <div class="flex items-center space-x-4 flex-1">
-          <div id="current-episode-image" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded"></div>
+<div id="current-episode-image" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full"></div>
           <div class="text-white">
             <div id="current-track" class="font-semibold text-sm">Nenhum episódio selecionado</div>
-            <div id="current-podcast" class="text-gray-400 text-xs">Gramsci: Hegemonia e Revolução</div>
+            <div id="current-podcast" class="text-gray-400 text-xs">Podcast Gramsci</div>
           </div>
         </div>
         
@@ -420,7 +423,7 @@
 
 <script src="scripts/share.js"></script>
   <script src="scripts/banner.js"></script>
-  <script src="scripts/music.js"></script> 
+  
 
 <script>
   document.getElementById('current-year').textContent = new Date().getFullYear();

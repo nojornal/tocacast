@@ -132,7 +132,8 @@ const generateRandomDuration = () => {
 let episodesData = [
     {
         id: 1,
-        nome: "1. A Hegemonia ",
+        nome: "1. A Hegemonia",
+        autor: "Carlos Silva",
         data: "12 Nov 2025",
         descricao: "Descrição do episódio sobre hegemonia nos dias atuais.",
         audio: "audios/a1.mp3",
@@ -143,6 +144,7 @@ let episodesData = [
     {
         id: 2,
         nome: "2. Gramsci para co", 
+        autor: "Maria Santos",
         data: "5 Nov 2025",
         descricao: "Como as ideias",
         audio: "audios/a1.mp3",
@@ -153,6 +155,7 @@ let episodesData = [
     {
         id: 3,
         nome: "3. O Conceito",
+        autor: "João Pereira",
         data: "29 Out 2025",
         descricao: "Análise do conceito de sociedade civil em Gramsci.",
         audio: "audios/a1.mp3",
@@ -162,7 +165,8 @@ let episodesData = [
     },
     {
         id: 4,
-        nome: "4. Intelectuais Orgânicos",
+        nome: "4. Intelectuais Orgânicos um teste para textos grandes",
+        autor: "Ana Costa",
         data: "22 Out 2025",
         descricao: "O papel dos intelectuais orgânicos na transformação social.",
         audio: "audios/a1.mp3",
@@ -173,6 +177,7 @@ let episodesData = [
     {
         id: 5,
         nome: "5. Bloco Histórico",
+        autor: "Pedro Almeida",
         data: "15 Out 2025",
         descricao: "Compreendendo o conceito de bloco histórico em Gramsci.",
         audio: "audios/a1.mp3",
@@ -246,6 +251,7 @@ const audioManager = (() => {
     const audioElement = document.getElementById('audio-element');
     const player = document.getElementById('audio-player');
     const currentTrack = document.getElementById('current-track');
+    const currentPodcast = document.getElementById('current-podcast');
     const currentTime = document.getElementById('current-time');
     const duration = document.getElementById('duration');
     const progressBar = document.getElementById('progress-bar');
@@ -473,6 +479,12 @@ const audioManager = (() => {
         updatePlayButton();
     };
     
+    const updatePlayerInfo = (episodeData) => {
+        currentTrack.textContent = episodeData.nome;
+        currentPodcast.textContent = episodeData.autor || 'Podcast Gramsci';
+        currentEpisodeImage.className = `w-12 h-12 bg-gradient-to-br ${episodeData.imageGradient} rounded`;
+    };
+    
     const loadEpisode = (episodeData) => {
         try {
             if (isPlaying) {
@@ -481,8 +493,10 @@ const audioManager = (() => {
             
             console.log(`Carregando: ${episodeData.nome}`);
             audioElement.src = episodeData.audio;
-            currentTrack.textContent = episodeData.nome;
-            currentEpisodeImage.className = `w-12 h-12 bg-gradient-to-br ${episodeData.imageGradient} rounded`;
+            
+            // Atualiza as informações do player incluindo o autor
+            updatePlayerInfo(episodeData);
+            
             currentEpisode = episodeData.id;
             player.classList.remove('hidden');
             
@@ -648,35 +662,36 @@ function initializeSearchSystem() {
             }
         }, 100);
     }
+
+    
     
     function createEpisodeElement(episode) {
         const episodeDiv = document.createElement('div');
         episodeDiv.className = `episode flex items-center gap-4 p-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors episode-transition ${episode.bannerGradient ? 'active-banner' : ''}`;
         episodeDiv.dataset.episodeId = episode.id;
         
-        episodeDiv.innerHTML = `
-            <div class="relative">
-                <div class="w-12 h-12 bg-gradient-to-br ${episode.imageGradient} rounded flex items-center justify-center">
-                    <i class="fa-solid fa-play text-white play-icon"></i>
-                </div>
-            </div>
-            <div class="flex-1">
-            <h3 class="font-semibold text-white text-sm sm:text-base truncate"> ${episode.nome}</h3>
-
-                <p class="text-gray-400 text-sm">${episode.descricao}</p>
-                <div class="flex items-center gap-4 mt-1">
-                    <span class="text-gray-500 text-xs">${episode.data}</span>
-                    <span class="text-gray-500 text-xs">${formatTime(episode.audioDuration || episode.defaultDuration)}</span>
-                </div>
-            </div>
-            <div class="blockchain-info text-right">
-                <div class="text-green-400 text-xs font-mono" title="${episode.blockchainHash}">
-                    ${episode.blockchainHash ? episode.blockchainHash.substring(0, 16) + '...' : 'Carregando...'}
-                </div>
-                <div class="text-gray-500 text-xs">Bloco ${episode.blockIndex}</div>
-                <div class="text-gray-500 text-xs">${episode.blockchainDate}</div>
-            </div>
-        `;
+episodeDiv.innerHTML = `
+    <div style="position: relative;">
+        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, ${episode.gradientStart || '#3b82f6'}, ${episode.gradientEnd || '#1d4ed8'}); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-play" style="color: white;"></i>
+        </div>
+    </div>
+    <div style="flex: 1; min-width: 0;">
+        <p style="font-weight: 600; color: #ef4444; margin: 0; word-wrap: break-word; line-height: 1.4;">${episode.nome}</p>
+        <p style="color: #9ca3af; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; margin: 4px 0;">${episode.descricao}</p>
+        <div style="display: flex; align-items: center; gap: 16px; margin-top: 4px;">
+            <span style="color: #6b7280; font-size: 12px;">${episode.data}</span>
+            <span style="color: #6b7280; font-size: 12px;">${formatTime(episode.audioDuration || episode.defaultDuration)}</span>
+        </div>
+    </div>
+    <div style="text-align: right; min-width: 0; flex-shrink: 0;">
+        <div style="color: #10b981; font-size: 12px; font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${episode.blockchainHash}">
+            ${episode.blockchainHash ? episode.blockchainHash.substring(0, 16) + '...' : 'Carregando...'}
+        </div>
+        <div style="color: #6b7280; font-size: 12px; margin-top: 2px;">Bloco ${episode.blockIndex}</div>
+        <div style="color: #6b7280; font-size: 12px; margin-top: 2px;">${episode.blockchainDate}</div>
+    </div>
+`;
         
         return episodeDiv;
     }

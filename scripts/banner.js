@@ -6,6 +6,7 @@ const episodeManager = (() => {
     const podcastImage = document.getElementById('podcast-image');
     const bannerArea = document.getElementById('banner-area');
     const bannerTitle = document.getElementById('banner-title');
+    const bannerAuthor = document.getElementById('banner-author'); // Novo elemento
     const bannerDescription = document.getElementById('banner-description');
     const mainPlayBtn = document.getElementById('main-play-btn');
     const hintLeft = document.getElementById('banner-hint-left');
@@ -195,8 +196,14 @@ const episodeManager = (() => {
     
     const updateBanner = (episode) => {
         bannerTitle.textContent = episode.nome;
+        
+        // ATUALIZAÇÃO: Adiciona o autor do episódio
+        if (bannerAuthor) {
+            bannerAuthor.textContent = `por ${episode.autor}`;
+        }
+        
         bannerDescription.textContent = episode.descricao;
-        podcastImage.className = `w-48 h-48 md:w-64 md:h-64 ${episode.bannerGradient} rounded-lg shadow-lg flex-shrink-0 banner-transition`;
+        podcastImage.className = `w-48 h-48 md:w-64 md:h-64 ${episode.bannerGradient} rounded-full shadow-lg flex-shrink-0 banner-transition`;
         updateNavigationHints();
         
         currentBannerEpisode = episode;
