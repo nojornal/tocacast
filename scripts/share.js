@@ -35,17 +35,16 @@ function gerarCardPadrao() {
 
     const nomeProjeto = document.getElementById("banner-title")?.innerText || "Podcast";
     const autor       = document.getElementById("banner-author")?.innerText || "Autor";
-    const nomeAudio   = document.getElementById("banner-subtitle")?.innerText || "Áudio";
+    //const nomeAudio   = document.getElementById("banner-subtitle")?.innerText || "Áudio";
     const link        = window.location.href;
 
     
     return (
-`${iconeProjeto} *${nomeProjeto}*
+//${iconeAudio} Áudio: *${nomeAudio}*
 
-${iconeAutor} Autor: *${autor}*
-${iconeAudio} Áudio: *${nomeAudio}*
-
-${iconeLink} ${link}`
+      `${iconeProjeto} *${nomeProjeto}*
+       ${iconeAutor} *${autor}*
+       ${iconeLink} ${link}`
     );
 }
 
@@ -77,7 +76,7 @@ document.querySelectorAll(".share-option").forEach(btn => {
         else if (plataforma === "instagram") {
             navigator.clipboard.writeText(card)
                 .then(() => {
-                    alert("Mensagem copiada! Agora escolha alguém no Instagram Direct e cole.");
+                    //alert("Mensagem copiada! Agora escolha alguém no Instagram Direct e cole.");
                     window.open("https://www.instagram.com/direct/inbox/", "_blank");
                 });
         }
@@ -85,7 +84,7 @@ document.querySelectorAll(".share-option").forEach(btn => {
         else if (plataforma === "copy") {
             navigator.clipboard.writeText(card)
                 .then(() => {
-                    alert("Card copiado com sucesso!");
+                    //alert("Card copiado com sucesso!");
                 });
         }
 

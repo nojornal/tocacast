@@ -291,20 +291,25 @@
 <div id="audio-player" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 p-4 hidden">
   <div class="max-w-4xl mx-auto relative">
     <!-- Botão Fechar (X) -->
-    <button id="close-player-btn" class="absolute -top-2 -right-2 md:-right-10 text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+    <button id="close-player-btn" class="absolute -top-7 -right-2 md:-right-10 text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs">
       <i class="fa-solid fa-xmark"></i>
     </button>
     
     <!-- Barra de Progresso com Tempo -->
-    <div class="flex items-center justify-between mb-2">
-      <span id="current-time" class="text-gray-400 text-xs">0:00</span>
-      <div class="progress-bar flex-1 mx-3" id="progress-container">
-        <div class="progress" id="progress-bar">
-          <div class="progress-handle" id="progress-handle"></div>
-        </div>
-      </div>
-      <span id="duration" class="text-gray-400 text-xs">0:00</span>
+     <div class="flex items-center mb-2">
+  <span id="current-time" class="text-gray-400 text-xs whitespace-nowrap mr-[3px]">0:00</span>
+
+  <div class="progress-bar w-400 sm:w-200 md:w-200 lg:w-200" id="progress-container">
+    <div class="progress" id="progress-bar">
+      <div class="progress-handle" id="progress-handle"></div>
     </div>
+  </div>
+
+  <span id="duration" class="text-gray-400 text-xs whitespace-nowrap ml-[3px]"></span>
+</div>
+
+
+
     
     <div class="flex items-center justify-between">
       <!-- Informações do episódio -->
