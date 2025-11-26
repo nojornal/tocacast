@@ -719,7 +719,7 @@ function initializeSearchSystem() {
         
         if (filteredEpisodes.length === 0) {
             const noResultsMessage = document.createElement('div');
-            noResultsMessage.className = 'no-results-message text-center text-gray-400 py-8';
+            noResultsMessage.className = 'no-results-message text-center text-gray-400 py-8 col-span-full';
             noResultsMessage.textContent = 'Nenhum episódio encontrado';
             episodesContainer.appendChild(noResultsMessage);
             return;
@@ -741,31 +741,66 @@ function initializeSearchSystem() {
 
     function createEpisodeElement(episode) {
         const episodeDiv = document.createElement('div');
-        episodeDiv.className = `episode flex items-center gap-4 p-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors episode-transition ${episode.bannerGradient ? 'active-banner' : ''}`;
+        episodeDiv.className = `episode flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors episode-transition ${episode.bannerGradient ? 'active-banner' : ''}`;
         episodeDiv.dataset.episodeId = episode.id;
         
         const gradientClasses = episode.imageGradient || 'from-purple-500 to-blue-500';
         
         episodeDiv.innerHTML = `
-            <div class="relative">
-                <div class="w-12 h-12 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-play text-white"></i>
+            <!-- Conteúdo Principal -->
+            <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                <!-- Ícone do Episódio -->
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-play text-white text-xs sm:text-sm"></i>
+                    </div>
+                </div>
+                
+                <!-- Informações do Episódio -->
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-red-500 text-sm sm:text-base mb-1 break-words leading-tight line-clamp-2">
+                        ${episode.nome}
+                    </h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-2 break-words leading-relaxed line-clamp-2">
+                        ${episode.descricao}
+                    </p>
+                    
+                    <!-- Metadados - Mobile em coluna, Desktop em linha -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-500">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-regular fa-calendar text-xs"></i>
+                            ${episode.data}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fa-regular fa-clock text-xs"></i>
+                            ${formatTime(episode.audioDuration || episode.defaultDuration)}
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="font-semibold text-red-500 mb-0 break-words leading-tight">${episode.nome}</p>
-                <p class="text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap text-sm mt-1">${episode.descricao}</p>
-                <div class="flex items-center gap-4 mt-1">
-                    <span class="text-gray-500 text-xs">${episode.data}</span>
-                    <span class="text-gray-500 text-xs">${formatTime(episode.audioDuration || episode.defaultDuration)}</span>
+            
+            <!-- Blockchain Info - Mobile abaixo, Desktop à direita -->
+            <div class="sm:text-right min-w-0 mt-2 sm:mt-0 sm:flex-shrink-0 sm:w-48">
+                <div class="flex flex-col gap-1 text-xs">
+                    <!-- Hash Blockchain -->
+                    <div class="flex sm:flex-col items-start sm:items-end gap-1">
+                        <span class="text-green-500 font-mono break-all line-clamp-1 sm:text-right">
+                            ${episode.blockchainHash ? episode.blockchainHash.substring(0, 12) + '...' : 'Carregando...'}
+                        </span>
+                    </div>
+                    
+                    <!-- Info Adicional Blockchain -->
+                    <div class="flex sm:justify-end items-center gap-3 text-gray-500 text-xs">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-cube text-xs"></i>
+                            Bloco ${episode.blockIndex}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fa-regular fa-calendar text-xs"></i>
+                            ${episode.blockchainDate}
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="text-right min-w-0 flex-shrink-0">
-                <div class="text-green-500 text-xs font-mono overflow-hidden text-ellipsis whitespace-nowrap" title="${episode.blockchainHash}">
-                    ${episode.blockchainHash ? episode.blockchainHash.substring(0, 16) + '...' : 'Carregando...'}
-                </div>
-                <div class="text-gray-500 text-xs mt-0.5">Bloco ${episode.blockIndex}</div>
-                <div class="text-gray-500 text-xs mt-0.5">${episode.blockchainDate}</div>
             </div>
         `;
         
@@ -776,14 +811,15 @@ function initializeSearchSystem() {
         const filteredEpisodes = episodesData.filter(episode => {
             const episodeTitle = episode.nome.toLowerCase();
             const episodeDescription = episode.descricao.toLowerCase();
+            const episodeAuthor = episode.autor.toLowerCase();
             const searchLower = searchTerm.toLowerCase();
             
             return episodeTitle.includes(searchLower) || 
-                   episodeDescription.includes(searchLower);
+                   episodeDescription.includes(searchLower) ||
+                   episodeAuthor.includes(searchLower);
         });
         
-        const orderedFilteredEpisodes = filteredEpisodes.sort((a, b) => a.id - b.id);
-        renderFilteredEpisodes(orderedFilteredEpisodes);
+        renderFilteredEpisodes(filteredEpisodes);
     }
     
     searchInput.addEventListener('input', function(e) {
